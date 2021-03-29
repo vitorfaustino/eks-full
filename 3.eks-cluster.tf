@@ -16,8 +16,12 @@ module "eks" {
 
   vpc_id = module.vpc.vpc_id
 
+  workers_group_defaults = {
+    root_volume_type = "gp2"
+  }
+
   ############################################################################
-  # Node Groups
+  # Managed Node Groups with SPOT (aws eks managed nodes)
   ############################################################################
   /*node_groups = {
     example = {
@@ -25,7 +29,7 @@ module "eks" {
       max_capacity     = 4
       min_capacity     = 1
 
-      instance_types = ["t3a.nano"]
+      instance_types = ["t3a.small", "t3a.medium"]
       capacity_type  = "SPOT"
       k8s_labels = {
         Environment = "dev"
@@ -37,10 +41,6 @@ module "eks" {
       }
     }
   }*/
-
-  workers_group_defaults = {
-    root_volume_type = "gp2"
-  }
 
   ############################################################################
   # Normal Worker Groups
@@ -65,7 +65,7 @@ module "eks" {
   ############################################################################
   # Mixed Worker Groups
   ############################################################################
-    worker_groups = [
+  /*worker_groups = [
     {
       name                = "on-demand-1"
       instance_type       = "t3a.medium"
@@ -86,8 +86,30 @@ module "eks" {
       kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot"
       //public_ip               = true
       public_ip               = false
+      autoscaling_enabled     = true
+      protect_from_scale_in   = true
+    },
+  ]*/
+
+  ############################################################################
+  # Worker group only with spot Mixed Worker Groups
+  ############################################################################
+  
+    worker_groups_launch_template = [
+    {
+      name                    = "spot-1"
+      override_instance_types = ["t3a.medium", "t3a.large"]
+      spot_instance_pools     = 4
+      asg_max_size            = 5
+      asg_desired_capacity    = 1
+      kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot"
+      //public_ip               = true
+      public_ip               = false
+      autoscaling_enabled     = true
+      protect_from_scale_in   = true
     },
   ]
+
 
   map_users = var.map_users
 
