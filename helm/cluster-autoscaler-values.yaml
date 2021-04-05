@@ -1,0 +1,21 @@
+cloudProvider: aws
+# Change the region
+awsRegion: eu-west-1
+
+rbac:
+  create: true
+  serviceAccount:
+    # This value should match local.k8s_service_account_name in locals.tf
+    name: autoscaler-cluster-aws
+    annotations:
+      # This value should match the ARN of the role created by module.iam_assumable_role_admin in irsa.tf
+      eks.amazonaws.com/role-arn: "arn:aws:iam::<ACCOUNT_ID>:role/eks-cluster-autoscaler"
+
+autoDiscovery:
+  # Change the cluster name
+  clusterName: <CLUSTER_NAME>
+  enabled: true
+
+image:
+  repository: us.gcr.io/k8s-artifacts-prod/autoscaling/cluster-autoscaler
+  tag: v1.19.1

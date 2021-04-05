@@ -6,11 +6,21 @@ variable "region" {
   description = "AWS region"
 }
 
+############################################################################
+# Cluster Name
+############################################################################
 variable "cluster_name" {
    type = string
    default = "training"
 }
 
+############################################################################
+# Number of users/namespaces to create
+############################################################################
+variable "number_users" {
+   type = number
+   default = 2
+}
 
 ############################################################################
 # Map Users to groups. Rolebinding by group
@@ -25,12 +35,12 @@ variable "map_users" {
 
   default = [
     {
-      userarn  = "arn:aws:iam::425239951089:user/eks_student1"
+      userarn  = "arn:aws:iam::<ACCOUNT_ID>:user/eks_student1"
       username = "eks_student1"
       groups   = ["operations1"]
     },
     {
-      userarn  = "arn:aws:iam::425239951089:user/eks_student2"
+      userarn  = "arn:aws:iam::<ACCOUNT_ID>:user/eks_student2"
       username = "eks_student2"
       groups   = ["operations2"]
     },

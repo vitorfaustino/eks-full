@@ -4,6 +4,7 @@ module "eks" {
   cluster_version = "1.19"
   subnets         = module.vpc.private_subnets
   cluster_endpoint_private_access = false
+  enable_irsa = true
 
   wait_for_cluster_interpreter = ["C:/Program Files/Git/bin/sh.exe", "-c"]
   wait_for_cluster_cmd          = "until curl -k -s $ENDPOINT/healthz >/dev/null; do sleep 4; done"
@@ -23,13 +24,13 @@ module "eks" {
   ############################################################################
   # Managed Node Groups with SPOT (aws eks managed nodes)
   ############################################################################
-  /*node_groups = {
+  node_groups = {
     example = {
       desired_capacity = 1
       max_capacity     = 4
       min_capacity     = 1
 
-      instance_types = ["t3a.small", "t3a.medium"]
+      instance_types = ["t3a.medium", "t3a.large"]
       capacity_type  = "SPOT"
       k8s_labels = {
         Environment = "dev"
@@ -40,7 +41,7 @@ module "eks" {
         ExtraTag = "training"
       }
     }
-  }*/
+  }
 
   ############################################################################
   # Normal Worker Groups
@@ -95,7 +96,7 @@ module "eks" {
   # Worker group only with spot Mixed Worker Groups
   ############################################################################
   
-    worker_groups_launch_template = [
+  /*worker_groups_launch_template = [
     {
       name                    = "spot-1"
       override_instance_types = ["t3a.medium", "t3a.large"]
@@ -108,7 +109,7 @@ module "eks" {
       autoscaling_enabled     = true
       protect_from_scale_in   = true
     },
-  ]
+  ]*/
 
 
   map_users = var.map_users

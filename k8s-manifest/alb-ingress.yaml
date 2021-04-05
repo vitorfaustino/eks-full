@@ -1,0 +1,20 @@
+#kubectl create deployment nginx --image=nginx -n student1
+#kubectl create service nodeport nginx --tcp=80:80 -n student1
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: student1
+  name: ingress-1
+  annotations:
+    alb.ingress.kubernetes.io/group.name: main
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /test
+            backend:
+              serviceName: nginx
+              servicePort: 80

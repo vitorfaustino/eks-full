@@ -1,5 +1,5 @@
 resource "kubernetes_namespace" "namespaces" {
-  count = 2
+  count = var.number_users
   metadata {
     annotations = {
       name = "annotation-${count.index+1}"
@@ -13,8 +13,9 @@ resource "kubernetes_namespace" "namespaces" {
   }
 }
 
+# Change APII resources
 resource "kubernetes_role" "role_operations" {
-  count = 2
+  count = var.number_users
   metadata {
     name = "operation"
     namespace = "student${count.index+1}"
@@ -36,9 +37,10 @@ resource "kubernetes_role" "role_operations" {
 }
 
 resource "kubernetes_role_binding" "rb1" {
+  count = var.number_users
   metadata {
     name      = "rb_operation"
-    namespace = "student1"
+    namespace = "student${count.index+1}"
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"
@@ -47,7 +49,7 @@ resource "kubernetes_role_binding" "rb1" {
   }
   subject {
     kind      = "User"
-    name      = "eks_student1"
+    name      = "eks_student${count.index+1}"
     api_group = "rbac.authorization.k8s.io"
   }
   /*subject {

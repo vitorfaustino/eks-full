@@ -17,6 +17,13 @@ provider "kubernetes" {
   }
 }
 
+## If want to avoid destry erros
+ /*provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config"
+  }
+}*/
+
 provider "helm" {
   kubernetes {
     host                   = data.aws_eks_cluster.cluster.endpoint
